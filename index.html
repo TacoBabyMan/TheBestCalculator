@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+    <title>The Best Calculator</title>
+    <style media="screen">
+      *{
+        font-family: Arial;
+        font-size: 1.1rem;
+      }
+      body{
+        background-color: #0f0f0f;
+        margin: 0px;
+        overflow: hidden;
+      }
+      alert{
+        display: none;
+        position: absolute;
+        transform: translate(-50%,-50%);
+        top: 50%;
+        left: 50%;
+      }
+      screen{
+        display: flex;
+        width: 100vw;
+        height: 100vh;
+        flex-direction: column;
+        align-items: center;
+        justify-content: flex-end;
+      }
+      .pads{
+        max-width: 80px;
+        width: 18vw;
+        height: 60px;
+        margin: 1px;
+        margin-left: -2px;
+        border: 0px;
+        border-radius: 7px;
+        font-weight: bold;
+      }
+      .pads:focus{
+        background-color: #c2c2c2;
+        animation-name: aniOut;
+        animation-duration: 0.4s;
+        animation-fill-mode: forwards;
+      }
+      @keyframes aniOut{
+        from{
+          background-color: #cfcab4;
+        }
+        to{
+          background-color: #c2c2c2;
+        }
+      }
+      screen{
+        margin-left: 0px;
+      }
+      .numbers{
+        background-color: #c2c2c2;
+      }
+      .arithmetic{
+        background-color: #e3865b;
+      }
+      output{
+        display: flex;
+        position: absolute;
+        top: 0%;
+        left: 50%;
+        transform: translate(-50%,-0%);
+        width: 100%;
+        max-width: 370px;
+        padding-top: 10px;
+      }
+      currentView ,answerView{
+        color: white;
+        font-size: 1.7rem;
+        width: 100%;
+        height: 100%;
+        overflow-y: auto;
+      }
+      answerView{
+        /* background-color: #0d0d0d; */
+        padding-left: 10px;
+        background-color: #ebebeb;
+        color: black;
+        display: none;
+      }
+      currentView:focus{
+        border: 0px;
+        outline: none;
+      }
+      #arrow{
+        width: 26px;
+        height: 26px;
+        transition-duration: 0.4s;
+      }
+      #extraFunctions{
+        position: absolute;
+        max-width: 405px;
+        width: 100%;
+        max-height: 28px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        left: 50%;
+        transform: translate(-50%,0%);
+        transition-duration: 0.4s;
+      }
+      /* #extraFunctionsButton:focus{
+        top: 12px !important;
+        transition: all 0.4s;
+      }
+      #extraFunctionsButton:focus ~ svg{
+        transform: rotate(180deg);
+        transition: all 0.4s;
+      } */
+      functionTray{
+        display: none;
+        position: absolute;
+        background-color: #363636;
+        width: 100%;
+        margin-top: 0px;
+        top: 50%;
+        left: 0%;
+        transition-duration: 0.4s;
+        pointer-events: none;
+      }
+      .funcKey{
+        background-color: #fcd977;
+      }
+
+    </style>
+  </head>
+  <body>
+    <output>
+      <currentView contenteditable="true">
+      </currentView>
+      <answerView contenteditable="true">
+      </answerView>
+    </output>
+    <div labal='Open Extra Functions' id="extraFunctions">
+      <button id="extraFunctionsButton" style="padding:0px;border:0px;width:100%;height:100%;position:absolute;opacity:0;z-index:9;" onclick="showExtraButtons()"></button>
+      <functionTray style="color:white;">
+        <p style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);">Still working on this, hopefull done soon. PS:: the  brackets do not work yet, I went to bed;
+        </p>
+      </functionTray>
+      <div style="pointer-events:none;background-color: #1c1c1c;width:100%;height:100%;position:absolute;border-radius:36px;"></div>
+      <svg style="pointer-events:none;z-index:1;" id='arrow' width="204" height="140" viewBox="0 0 204 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="101.668" width="54" height="142.599" transform="rotate(45 101.668 0)" fill="white"/>
+        <rect x="64" y="38.1838" width="54" height="142.599" transform="rotate(-45 64 38.1838)" fill="white"/>
+      </svg>
+    </div>
+
+    <screen>
+      <row id="buttonCalcPos">
+        <button class="pads numbers" onclick="buttonPressed(9)">9</button>
+        <button class="pads numbers" onclick="buttonPressed(8)">8</button>
+        <button class="pads numbers" onclick="buttonPressed(7)">7</button>
+        <button class="pads funcKey" onclick="buttonPressed('del')">DEL</button>
+        <button class="pads funcKey" onclick="buttonPressed('ac')">AC</button>
+      </row>
+      <row>
+        <button class="pads numbers" onclick="buttonPressed(6)">6</button>
+        <button class="pads numbers" onclick="buttonPressed(5)">5</button>
+        <button class="pads numbers" onclick="buttonPressed(4)">4</button>
+        <button class="pads arithmetic" onclick="buttonPressed('*')">x</button>
+        <button class="pads arithmetic" onclick="buttonPressed('/')">/</button>
+      </row>
+      <row>
+        <button class="pads numbers" onclick="buttonPressed(3)">3</button>
+        <button class="pads numbers" onclick="buttonPressed(2)">2</button>
+        <button class="pads numbers" onclick="buttonPressed(1)">1</button>
+        <button class="pads arithmetic" onclick="buttonPressed('+')">+</button>
+        <button class="pads arithmetic" onclick="buttonPressed('-')">-</button>
+      </row>
+      <row>
+        <button class="pads" onclick="buttonPressed('')">( )</button>
+        <button class="pads numbers" onclick="buttonPressed(0)">0</button>
+        <button class="pads" onclick="buttonPressed('.')">.</button>
+        <button class="pads" onclick="buttonPressed('ans')">Ans</button>
+        <button class="pads" onclick="buttonPressed('=')">=</button>
+      </row>
+      <row style="height:3vh;">
+      </row>
+    </screen>
+    <alert>
+      <button id = 'installButton' onclick='registerWorker()'>Install Application</button>
+    </alert>
+  </body>
+  <!-- <script src="calculationScript.js"></script> -->
+  <script>
+    var y2;
+    let functionPanel = false;
+
+    function setOutput(){
+      if(window.innerHeight > 560){
+        let y = window.innerHeight - (300 + window.innerHeight*0.03);
+        document.querySelector('output').style.maxHeight = `${y}px`;
+        document.querySelector('output').style.height = `${y}px`;
+        document.querySelector('functionTray').style.maxHeight = `${y}px`;
+        document.querySelector('functionTray').style.height = `${y}px`;
+        y2 = document.querySelector('#buttonCalcPos').getBoundingClientRect();
+        if(!functionPanel){
+          document.querySelector('#extraFunctions').style.top = `${y2.y-33}px`;
+        }else{
+          document.querySelector('#extraFunctions').style.top = "12px";
+        }
+      }else{
+        displayError();
+      }
+    }
+    window.onload = setOutput();
+    const bodyMutations = document.querySelector('body');
+    const bodyObserver = new window.ResizeObserver(()=>{setOutput();})
+    bodyObserver.observe(bodyMutations);
+
+    const checkIfPanelHidden = () =>{
+      return new Promise(resolve=>{
+        if(functionPanel){
+          showExtraButtons();
+          resolve();
+        }else{
+          resolve()
+        }
+      })
+    }
+    let equation = '';
+    let prevAnswer;
+    let localVal;
+    function answerDisplay(){
+      if((document.querySelector('answerView').style.display == '') && (equation != '')){
+        document.querySelector('answerView').style.display = 'block';
+      }else{
+        if(equation == ''){
+          document.querySelector('answerView').style.display = '';
+        }
+      }
+    }
+    function evaluation(final){
+      return new Function('return ' + final)();
+    }
+    function calculation(x){
+      if(typeof(x) === 'number'){
+        equation += `${x}`
+      }else{
+        switch(`${x}`){
+          case 'sdad':
+            break;
+          case '.':
+            equation += '.';
+            break;
+          case '=':
+            answerDisplay();
+            localVal = evaluation(equation);
+            if(localVal != undefined){
+              prevAnswer = localVal;
+              document.querySelector('answerView').innerHTML = localVal;
+            }else{
+              if(prevAnswer != undefined){
+                document.querySelector('answerView').style.display = 'block';
+                document.querySelector('answerView').innerHTML = prevAnswer;
+              }
+            }
+            break;
+          case 'ans':
+            if(prevAnswer != null){
+              equation += prevAnswer;
+            }
+            answerDisplay();
+            break;
+          case 'ac':
+            equation = '';
+            answerDisplay();
+            break;
+          case 'del':
+            equation = equation.slice(0,-1);
+            break;
+          default:
+            equation += `${x}`;
+            break;
+        }
+      }
+      document.querySelector('currentView').innerHTML = equation;
+    }
+    async function buttonPressed(n){
+      await checkIfPanelHidden();
+      calculation(n);
+      if(typeof(n) === 'number'){
+        setTimeout(()=>{document.querySelector(`[onclick="buttonPressed(${n})"]`).blur()},40);
+      }else{
+        setTimeout(()=>{document.querySelector(`[onclick="buttonPressed('${n}')"]`).blur()},40);
+      }
+      // document.querySelector('currentView').innerHTML += answer;
+    }
+
+    function showExtraButtons(){
+      if(functionPanel){
+        functionPanel = false;
+        setOutput();
+        document.querySelector('functionTray').style.display = 'none';
+        document.querySelector('#arrow').style.transform = null;
+      }else{
+        functionPanel = true;
+        setTimeout(()=>{document.querySelector('functionTray').style.display = 'block';},400);
+        document.querySelector('#extraFunctions').style.top = "12px";
+        document.querySelector('#arrow').style.transform = "rotate(180deg)";
+      }
+    }
+    const popUp = () =>{
+      //document.querySelector('alert').style.display = 'block';
+    }
+    // if('serviceWorker' in navigator){
+    //   window.addEventListener('load', ()=>{
+    //     navigator.serviceWorker
+    //       .register('../sw_cache_site.js')
+    //   })
+    // }
+
+  </script>
+</html>
